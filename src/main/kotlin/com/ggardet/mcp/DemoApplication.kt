@@ -1,4 +1,4 @@
-package com.ggardet.langchain.demo
+package com.ggardet.mcp
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

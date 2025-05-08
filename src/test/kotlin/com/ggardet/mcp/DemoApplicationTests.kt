@@ -1,4 +1,4 @@
-package com.ggardet.langchain.demo
+package com.ggardet.mcp
 
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
