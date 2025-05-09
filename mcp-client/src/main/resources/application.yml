@@ -1,5 +1,6 @@
+server.port: 8080
 spring:
-  application.name: langchain4j-mcp
+  application.name: mcp-client
   threads.virtual.enabled: true
 logging.level.dev.langchain4j: DEBUG
 vaadin.launch-browser: true

@@ -21,28 +21,25 @@ To be noticed that 2 LLMs will be used:
 
 ## Starting the project
 
-To install the required tools, you can use sdkman:
+To install the required tools and build the project, you can use the following commands:
 
 ```bash
 sdk env install # install the required tools & versions (jdk, mvn, ...)
-```
-
-**The following is optional** as spring-boot should start the docker containers for you:
-
-```bash
-docker compose -f compose.yml up -d # start the docker containers (llm, vectorial db, ...)
-```
-
-Then, you can start the project with:
-
-```bash
+docker compose -f mcp-client/compose.yml -f mcp-server/compose.yml up -d # build and start the docker containers (ollama, webui, qdrant, etc.)
 mvn clean install -DskipTests # the first time fetch dependencies and build the project
-mvn spring-boot:run # start the spring boot app
-# you can also use the following command once the dependencies are downloaded
-mvn compile -DskipTests && mvn spring-boot:run
 ```
-
-This should start a chat window at **localhost:8080**  
 
 > [!NOTE]
-> To be noticed that the docker initialization could be very long due to the LLM download and the webui setup.
+> To be noticed that the `docker compose` command will take a while to download the required images and build the containers.  
+> That is precisely why we use `-d` to run it in the background.  
+> Later spring-boot should start the docker containers for you, so no need to run this command each time we want to start the project.
+
+Then, you can start the client and the server projects with the following commands (in a separate terminal):
+
+```bash
+mvn spring-boot:run -pl mcp-client # start the LLM UI
+mvn spring-boot:run -pl mcp-server # start the MCP server
+```
+
+If needed you can also do a `mvn compile -DskipTests` before to re-compile the project.  
+A chat window should be available at **localhost:8080** (client) and the MCP server at **localhost:8081**.
