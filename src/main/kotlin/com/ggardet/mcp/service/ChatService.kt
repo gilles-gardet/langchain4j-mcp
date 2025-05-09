@@ -1,26 +1,27 @@
 package com.ggardet.mcp.service
 
-import dev.langchain4j.data.message.UserMessage
+import com.ggardet.mcp.contract.RagAssistant
+import dev.langchain4j.data.segment.TextSegment
 import dev.langchain4j.model.chat.ChatLanguageModel
-import dev.langchain4j.model.ollama.OllamaChatModel
+import dev.langchain4j.model.embedding.EmbeddingModel
+import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
+import dev.langchain4j.service.AiServices
+import dev.langchain4j.store.embedding.EmbeddingStore
 import org.springframework.stereotype.Service
 
 @Service
-class ChatService {
-
-    private val model: ChatLanguageModel = OllamaChatModel.builder()
-        .baseUrl("http://localhost:11434")
-        .modelName("phi4")
-        .temperature(0.7)
+class ChatService(
+    private val storeService: StoreService,
+    private val chatLanguageModel: ChatLanguageModel,
+    embeddingModel: EmbeddingModel,
+    embeddingStore: EmbeddingStore<TextSegment>,
+) {
+    private val ragAssistant: RagAssistant = AiServices.builder(RagAssistant::class.java)
+        .chatLanguageModel(chatLanguageModel)
+        .contentRetriever(EmbeddingStoreContentRetriever(embeddingStore, embeddingModel, 3))
         .build()
 
-    fun sendMessage(message: String): String {
-        try {
-            val userMessage = UserMessage.from(message)
-            val response = model.chat(userMessage)
-            return response.aiMessage().text()
-        } catch (e: Exception) {
-            return "Error: ${e.message}"
-        }
-    }
+    fun sendMessage(message: String): String = ragAssistant.augmentedChat(message)
+
+    fun ingestContentFromUrl(url: String) = storeService.ingestContentFromUrl(url)
 }

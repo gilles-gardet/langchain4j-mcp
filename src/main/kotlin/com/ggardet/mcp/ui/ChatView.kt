@@ -7,6 +7,8 @@ import com.vaadin.flow.component.button.ButtonVariant
 import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.html.H1
 import com.vaadin.flow.component.html.Span
+import com.vaadin.flow.component.notification.Notification
+import com.vaadin.flow.component.notification.NotificationVariant
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout
 import com.vaadin.flow.component.orderedlayout.VerticalLayout
 import com.vaadin.flow.component.textfield.TextField
@@ -14,16 +16,17 @@ import com.vaadin.flow.dom.Style
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
 import org.apache.commons.lang3.StringUtils
-import org.springframework.beans.factory.annotation.Autowired
 
 private const val backgroundColor = "#f9f9f9"
 
 @Route(StringUtils.EMPTY)
 @PageTitle("LLM Chat")
-class ChatView(@Autowired private val chatService: ChatService) : VerticalLayout() {
+class ChatView(private val chatService: ChatService) : VerticalLayout() {
     private val chatHistory = Div()
     private val userInput = TextField("Your message")
     private val sendButton = Button("Send")
+    private val urlInput = TextField("URL to ingest")
+    private val ingestButton = Button("Ingest Content")
 
     init {
         setupUI()
@@ -31,9 +34,18 @@ class ChatView(@Autowired private val chatService: ChatService) : VerticalLayout
     }
 
     private fun setupUI() {
+        setupGeneralElements()
+        setupUrlInput()
+        setupChatContainer()
+    }
+
+    private fun setupGeneralElements() {
         setSizeFull()
         isPadding = true
         add(H1("Chat with LLM"))
+    }
+
+    private fun setupChatContainer() {
         chatHistory.apply {
             className = "chat-history"
             style.setBorder("1px solid #ccc")
@@ -59,9 +71,57 @@ class ChatView(@Autowired private val chatService: ChatService) : VerticalLayout
         add(inputLayout)
     }
 
+    private fun setupUrlInput() {
+        urlInput.apply {
+            placeholder = "Enter URL to ingest content..."
+            isClearButtonVisible = true
+            width = "100%"
+        }
+        ingestButton.apply {
+            addThemeVariants(ButtonVariant.LUMO_SUCCESS)
+            style.setAlignSelf(Style.AlignSelf.FLEX_END)
+        }
+        val urlLayout = HorizontalLayout(urlInput, ingestButton)
+        urlLayout.width = "100%"
+        urlLayout.expand(urlInput)
+        add(urlLayout)
+    }
+
     private fun setupEventHandlers() {
         sendButton.addClickListener { sendMessage() }
         userInput.addKeyPressListener { if (it.key == ENTER) sendMessage() }
+        ingestButton.addClickListener { ingestContent() }
+    }
+
+    private fun ingestContent() {
+        val url = urlInput.value.trim()
+        if (url.isEmpty()) {
+            val notification = Notification("Please enter a URL to ingest", 3000, Notification.Position.BOTTOM_CENTER)
+            notification.addThemeVariants(NotificationVariant.LUMO_WARNING)
+            notification.open()
+        }
+        try {
+            chatService.ingestContentFromUrl(url)
+            val notification =
+                Notification("Content from URL successfully ingested!", 3000, Notification.Position.BOTTOM_CENTER)
+            notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS)
+            notification.open()
+            urlInput.clear()
+            addMessageToChat(
+                "System",
+                "Content from URL '$url' has been ingested and is now available for context in your questions.",
+                "system-message"
+            )
+        } catch (exception: Exception) {
+            val notification =
+                Notification(
+                    "Failed to ingest content: ${exception.message}",
+                    3000,
+                    Notification.Position.BOTTOM_CENTER
+                )
+            notification.addThemeVariants(NotificationVariant.LUMO_ERROR)
+            notification.open()
+        }
     }
 
     private fun sendMessage() {
@@ -81,12 +141,19 @@ class ChatView(@Autowired private val chatService: ChatService) : VerticalLayout
         messageDiv.style.setMarginBottom("10px")
         messageDiv.style.setPadding("8px")
         messageDiv.style.setBorderRadius("5px")
-        if (className == "user-message") {
-            messageDiv.style.setBackgroundColor("#e1f5fe")
-            messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_END)
-        } else {
-            messageDiv.style.setBackgroundColor("#f1f1f1")
-            messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_START)
+        when (className) {
+            "user-message" -> {
+                messageDiv.style.setBackgroundColor("#e1f5fe")
+                messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_END)
+            }
+            "system-message" -> {
+                messageDiv.style.setBackgroundColor("#e8f5e9")
+                messageDiv.style.setAlignSelf(Style.AlignSelf.CENTER)
+            }
+            else -> {
+                messageDiv.style.setBackgroundColor("#f1f1f1")
+                messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_START)
+            }
         }
         val senderSpan = Span("$sender: ")
         senderSpan.style.setFontWeight("bold")
