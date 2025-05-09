@@ -130,7 +130,9 @@ class ChatView(private val chatService: ChatService) : VerticalLayout() {
             addMessageToChat("You", message, "user-message")
             userInput.clear()
             userInput.focus()
-            val response = chatService.sendMessage(message)
+            val raw = chatService.sendMessage(message)
+            val thinkPattern = Regex("<think>(?s).*?</think>")
+            val response = raw.replace(thinkPattern, "").trim()
             addMessageToChat("LLM", response, "llm-message")
         }
     }

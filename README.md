@@ -5,11 +5,12 @@ The goal of this project is to:
 - [x] implement a little chat UI with vaadin
 - [x] test and use a local LLM with the help of langchain4j
 - [x] implement some RAG using qdrant as vectorial db
-- [ ] integrate a use case with a LCM (TBD)
+- [x] integrate a call to an external API with a LCM
+- [ ] integrate a call to a database with a LCM
 
 To be noticed that 2 LLMs will be used:
 
-- *phi4* as our chat model
+- *qwen3* as our chat model (which supports MCP tools)
 - *nomic* as our embedding model
 
 ## Prerequisites

@@ -1,13 +1,19 @@
 services:
   ollama:
-    image: ollama/ollama:0.5.7
+    image: ollama/ollama:0.6.8
     ports:
       - "11434:11434"
     container_name: ollama
     pull_policy: always
     tty: true
     restart: always
-    entrypoint: ["/bin/bash", "-c", "/bin/ollama serve & pid=$!; sleep 5; echo '🔴 Retrieve Ollama models...'; ollama pull phi4; ollama pull nomic-embed-text; echo '🟢 Done!'; wait $pid"]
+    entrypoint: ["/bin/bash", "-c", "/bin/ollama serve & pid=$!; sleep 5; echo '🔴 Retrieve Ollama models...'; ollama pull qwen3:14b; ollama pull nomic-embed-text; echo '🟢 Done!'; touch /tmp/models_ready; wait $pid"]
+    healthcheck:
+      test: [ "CMD-SHELL", "test -f /tmp/models_ready || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 50
+      start_period: 10s
     environment:
       - OLLAMA_KEEP_ALIVE=24h
       - OLLAMA_HOST=0.0.0.0
