@@ -1,5 +1,16 @@
 server.port: 8081
 spring:
   application.name: mcp-server
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+  datasource:
+    url: jdbc:postgresql://localhost:5342/mcp-server
+    username: gilles
+    password: password
+  jpa:
+    show-sql: true
+    database: postgresql
   main.web-application-type: none
+  sql.init.mode: never
   threads.virtual.enabled: true

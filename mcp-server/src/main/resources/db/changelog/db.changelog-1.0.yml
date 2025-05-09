@@ -1,0 +1,71 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-post-table
+      author: gilles
+      comment: creation of the post's table
+      changes:
+        - createTable:
+            tableName: post
+            columns:
+              - column:
+                  name: id
+                  type: varchar(36)
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: title
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: content
+                  type: clob
+                  constraints:
+                    nullable: true
+              - column:
+                  name: created_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+              - column:
+                  name: updated_at
+                  type: datetime
+                  constraints:
+                    nullable: false
+        - insert:
+            tableName: post
+            columns:
+              - column:
+                  name: id
+                  value: 7f557a93-b788-4795-9bc0-8bb5c7ae998a
+              - column:
+                  name: title
+                  value: 'My title 1'
+              - column:
+                  name: content
+                  value: 'My content 1'
+              - column:
+                  name: created_at
+                  value: '2020-01-01 00:00:00'
+              - column:
+                  name: updated_at
+                  value: '2020-01-01 00:00:00'
+        - insert:
+            tableName: post
+            columns:
+              - column:
+                  name: id
+                  value: 5b5aa244-928b-4807-968d-b0501cc793e2
+              - column:
+                  name: title
+                  value: 'My title 2'
+              - column:
+                  name: content
+                  value: 'My content 2'
+              - column:
+                  name: created_at
+                  value: '2020-01-01 00:00:00'
+              - column:
+                  name: updated_at
+                  value: '2020-01-01 00:00:00'
