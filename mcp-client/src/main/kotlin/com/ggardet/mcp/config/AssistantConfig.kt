@@ -10,7 +10,7 @@ import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport
 import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport
 import dev.langchain4j.memory.ChatMemory
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
-import dev.langchain4j.model.chat.ChatLanguageModel
+import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.model.embedding.EmbeddingModel
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
@@ -36,7 +36,7 @@ class AssistantConfig {
 
     @Profile("!openai")
     @Bean
-    fun localChatLanguageModel(): ChatLanguageModel = OllamaChatModel.builder()
+    fun localChatModel(): ChatModel = OllamaChatModel.builder()
         .baseUrl("http://localhost:11434")
         .modelName("qwen3:14b")
         .logRequests(true)
@@ -46,7 +46,7 @@ class AssistantConfig {
 
     @Profile("openai")
     @Bean
-    fun openaiChatLanguageModel(): ChatLanguageModel = OpenAiChatModel.builder()
+    fun openaiChatModel(): ChatModel = OpenAiChatModel.builder()
         .modelName(OpenAiChatModelName.GPT_4_O_MINI)
         .apiKey(System.getenv("OPENAI_API_KEY"))
         .logRequests(true)
@@ -56,11 +56,11 @@ class AssistantConfig {
 
     @Bean
     fun assistant(
-        chatLanguageModel: ChatLanguageModel,
+        chatModel: ChatModel,
         contentRetriever: EmbeddingStoreContentRetriever,
         mcpToolProvider: McpToolProvider
     ): Assistant = AiServices.builder(Assistant::class.java)
-        .chatLanguageModel(chatLanguageModel)
+        .chatModel(chatModel)
         .toolProvider(mcpToolProvider)
         .contentRetriever(contentRetriever)
         .build()

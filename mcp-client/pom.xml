@@ -11,7 +11,7 @@
 
     <properties>
         <vaadin.version>24.7.3</vaadin.version>
-        <langchain4j.version>1.0.0-beta3</langchain4j.version>
+        <langchain4j.version>1.0.0-beta4</langchain4j.version>
     </properties>
 
     <dependencyManagement>
