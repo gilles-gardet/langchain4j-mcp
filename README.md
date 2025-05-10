@@ -8,7 +8,6 @@ The goal of this project is to:
 - [x] integrate a call to an external API with a LCM
 - [x] integrate a call to a database with a LCM
 - [x] integrate a call to the GitHub LCM Server (docker + openai LLM)
-- [ ] support markdown interpolation in the chat view
 
 To be noticed that 3 LLMs will be used:
 

@@ -1,8 +1,8 @@
 package com.ggardet.mcp.ui
 
 import com.ggardet.mcp.model.Assistant
-import com.ggardet.mcp.service.AssistantService
 import com.ggardet.mcp.service.StoreService
+import com.vaadin.flow.component.Html
 import com.vaadin.flow.component.Key.ENTER
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -17,6 +17,8 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.dom.Style
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
+import com.vladsch.flexmark.html.HtmlRenderer
+import com.vladsch.flexmark.parser.Parser
 import org.apache.commons.lang3.StringUtils
 
 private const val backgroundColor = "#f9f9f9"
@@ -71,6 +73,7 @@ class ChatView(private val assistant: Assistant, private val storeService: Store
         inputLayout.width = "100%"
         inputLayout.expand(userInput)
         add(inputLayout)
+        userInput.focus()
     }
 
     private fun setupUrlInput() {
@@ -135,7 +138,11 @@ class ChatView(private val assistant: Assistant, private val storeService: Store
             val raw = assistant.chat(message)
             val thinkPattern = Regex("<think>(?s).*?</think>")
             val response = raw.replace(thinkPattern, "").trim()
-            addMessageToChat("LLM", response, "llm-message")
+            val parser = Parser.builder().build()
+            val renderer = HtmlRenderer.builder().build()
+            val document = parser.parse(response)
+            val htmlResponse = renderer.render(document)
+            addMessageToChat("LLM", htmlResponse, "llm-message")
         }
     }
 
@@ -150,12 +157,10 @@ class ChatView(private val assistant: Assistant, private val storeService: Store
                 messageDiv.style.setBackgroundColor("#e1f5fe")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_END)
             }
-
             "system-message" -> {
                 messageDiv.style.setBackgroundColor("#e8f5e9")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.CENTER)
             }
-
             else -> {
                 messageDiv.style.setBackgroundColor("#f1f1f1")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_START)
@@ -163,8 +168,9 @@ class ChatView(private val assistant: Assistant, private val storeService: Store
         }
         val senderSpan = Span("$sender: ")
         senderSpan.style.setFontWeight("bold")
-        val messageSpan = Span(message)
-        messageDiv.add(senderSpan, messageSpan)
+        val wrappedMessage = "<div>$message</div>"
+        val messageHtml = Html(wrappedMessage)
+        messageDiv.add(senderSpan, messageHtml)
         chatHistory.add(messageDiv)
         ui.ifPresent { ui ->
             ui.access {

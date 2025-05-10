@@ -10,7 +10,7 @@
     <artifactId>mcp-client</artifactId>
 
     <properties>
-        <vaadin.version>24.5.0</vaadin.version>
+        <vaadin.version>24.7.3</vaadin.version>
         <langchain4j.version>1.0.0-beta3</langchain4j.version>
     </properties>
 
@@ -41,6 +41,11 @@
         <dependency>
             <groupId>com.vaadin</groupId>
             <artifactId>vaadin-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.vladsch.flexmark</groupId>
+            <artifactId>flexmark-all</artifactId>
+            <version>0.64.8</version>
         </dependency>
         <dependency>
             <groupId>dev.langchain4j</groupId>
