@@ -6,7 +6,9 @@ The goal of this project is to:
 - [x] test and use a local LLM with the help of langchain4j
 - [x] implement some RAG using qdrant as vectorial db
 - [x] integrate a call to an external API with a LCM
-- [ ] integrate a call to a database with a LCM
+- [x] integrate a call to a database with a LCM
+- [ ] integrate a call to the GitHub LCM Server (docker)
+- [ ] support markdown interpolation in the chat view
 
 To be noticed that 2 LLMs will be used:
 
