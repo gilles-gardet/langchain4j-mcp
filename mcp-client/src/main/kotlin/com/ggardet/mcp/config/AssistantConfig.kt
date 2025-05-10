@@ -7,17 +7,21 @@ import dev.langchain4j.mcp.client.DefaultMcpClient
 import dev.langchain4j.mcp.client.McpClient
 import dev.langchain4j.mcp.client.transport.McpTransport
 import dev.langchain4j.mcp.client.transport.http.HttpMcpTransport
+import dev.langchain4j.mcp.client.transport.stdio.StdioMcpTransport
 import dev.langchain4j.memory.ChatMemory
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.chat.ChatLanguageModel
 import dev.langchain4j.model.embedding.EmbeddingModel
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
+import dev.langchain4j.model.openai.OpenAiChatModel
+import dev.langchain4j.model.openai.OpenAiChatModelName
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.service.AiServices
 import dev.langchain4j.store.embedding.EmbeddingStore
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 
 @Configuration
 class AssistantConfig {
@@ -30,10 +34,21 @@ class AssistantConfig {
         .logResponses(true)
         .build()
 
+    @Profile("!openai")
     @Bean
-    fun chatLanguageModel(): ChatLanguageModel = OllamaChatModel.builder()
+    fun localChatLanguageModel(): ChatLanguageModel = OllamaChatModel.builder()
         .baseUrl("http://localhost:11434")
         .modelName("qwen3:14b")
+        .logRequests(true)
+        .logResponses(true)
+        .temperature(0.7)
+        .build()
+
+    @Profile("openai")
+    @Bean
+    fun openaiChatLanguageModel(): ChatLanguageModel = OpenAiChatModel.builder()
+        .modelName(OpenAiChatModelName.GPT_4_O_MINI)
+        .apiKey(System.getenv("OPENAI_API_KEY"))
         .logRequests(true)
         .logResponses(true)
         .temperature(0.7)
@@ -59,20 +74,34 @@ class AssistantConfig {
     @Bean
     fun chatMemory(): ChatMemory = MessageWindowChatMemory.withMaxMessages(10)
 
-    @Bean
-    fun mcpTransport(): McpTransport = HttpMcpTransport.Builder()
+    @Bean(name = ["serverMcpTransport"])
+    fun serverMcpTransport(): McpTransport = HttpMcpTransport.Builder()
         .sseUrl("http://localhost:8081/sse")
         .logRequests(true)
         .logResponses(true)
         .build()
 
-    @Bean
-    fun mcpClient(mcpTransport: McpTransport): McpClient = DefaultMcpClient.Builder()
-        .transport(mcpTransport)
+    @Bean(name = ["serverMcpClient"])
+    fun serverMcpClient(serverMcpTransport: McpTransport): McpClient = DefaultMcpClient.Builder()
+        .transport(serverMcpTransport)
+        .build()
+
+    @Bean(name = ["githubMcpTransport"])
+    fun githubTransport(): McpTransport = StdioMcpTransport.Builder()
+        .command(listOf("/usr/local/bin/docker", "run", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "-i", "mcp/github"))
+        .logEvents(true)
+        .build()
+
+    @Bean(name = ["githubMcpClient"])
+    fun githubMcpClient(githubMcpTransport: McpTransport): McpClient = DefaultMcpClient.Builder()
+        .transport(githubMcpTransport)
         .build()
 
     @Bean
-    fun mcpToolProvider(mcpClient: McpClient): McpToolProvider = McpToolProvider.builder()
-        .mcpClients(listOf(mcpClient))
+    fun mcpToolProvider(
+        githubMcpClient: McpClient,
+        serverMcpClient: McpClient,
+    ): McpToolProvider = McpToolProvider.builder()
+        .mcpClients(listOf(githubMcpClient, serverMcpClient))
         .build()
 }
