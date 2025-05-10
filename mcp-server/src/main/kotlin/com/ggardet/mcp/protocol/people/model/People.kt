@@ -3,37 +3,47 @@ package com.ggardet.mcp.protocol.people.model
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
+import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Table
-import org.hibernate.annotations.JdbcTypeCode
+import jakarta.persistence.Version
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
-import java.sql.Types
 import java.time.Instant
 import java.util.UUID
 
 @Entity
 @Table(name = "people")
-class People(
+class People() {
     @Id
-    @GeneratedValue
-    @JdbcTypeCode(Types.VARCHAR)
-    val id: UUID? = UUID.randomUUID(),
+    @GeneratedValue(strategy = GenerationType.UUID)
+    val id: UUID? = null
 
     @Column(nullable = false)
-    val name: String,
+    lateinit var name: String
 
     @Column(nullable = false)
-    val age: Int,
+    var age: Int = 0
 
     @Column(nullable = true)
-    val country: String,
+    lateinit var country: String
 
     @Column(name = "created_at", nullable = false)
     @CreatedDate
-    var createdAt: Instant? = Instant.now(),
+    val createdAt: Instant? = Instant.now()
 
     @Column(name = "updated_at", nullable = false)
     @LastModifiedDate
-    var updatedAt: Instant? = Instant.now(),
-)
+    var updatedAt: Instant? = Instant.now()
+
+    @Version
+    @Column(name = "version", nullable = false)
+    var version: Long? = 0
+
+    constructor(name: String, age: Int, country: String) : this() {
+        this.name = name
+        this.age = age
+        this.country = country
+    }
+}
+

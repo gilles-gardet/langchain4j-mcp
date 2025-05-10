@@ -1,0 +1,13 @@
+databaseChangeLog:
+  - changeSet:
+      id: add-version-to-people-table
+      author: gilles
+      comment: modify the people referential to include a version
+      changes:
+        - addColumn:
+            tableName: people
+            columns:
+              - column:
+                  name: version
+                  type: java.lang.Long
+                  defaultValue: 0

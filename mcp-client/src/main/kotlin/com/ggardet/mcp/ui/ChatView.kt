@@ -1,6 +1,8 @@
 package com.ggardet.mcp.ui
 
-import com.ggardet.mcp.service.ChatService
+import com.ggardet.mcp.model.Assistant
+import com.ggardet.mcp.service.AssistantService
+import com.ggardet.mcp.service.StoreService
 import com.vaadin.flow.component.Key.ENTER
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
@@ -21,7 +23,7 @@ private const val backgroundColor = "#f9f9f9"
 
 @Route(StringUtils.EMPTY)
 @PageTitle("LLM Chat")
-class ChatView(private val chatService: ChatService) : VerticalLayout() {
+class ChatView(private val assistant: Assistant, private val storeService: StoreService) : VerticalLayout() {
     private val chatHistory = Div()
     private val userInput = TextField("Your message")
     private val sendButton = Button("Send")
@@ -42,7 +44,7 @@ class ChatView(private val chatService: ChatService) : VerticalLayout() {
     private fun setupGeneralElements() {
         setSizeFull()
         isPadding = true
-        add(H1("Chat with LLM"))
+        add(H1("Local LLM with LCM integration"))
     }
 
     private fun setupChatContainer() {
@@ -101,7 +103,7 @@ class ChatView(private val chatService: ChatService) : VerticalLayout() {
             notification.open()
         }
         try {
-            chatService.ingestContentFromUrl(url)
+            storeService.ingestContentFromUrl(url)
             val notification =
                 Notification("Content from URL successfully ingested!", 3000, Notification.Position.BOTTOM_CENTER)
             notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS)
@@ -130,7 +132,7 @@ class ChatView(private val chatService: ChatService) : VerticalLayout() {
             addMessageToChat("You", message, "user-message")
             userInput.clear()
             userInput.focus()
-            val raw = chatService.sendMessage(message)
+            val raw = assistant.chat(message)
             val thinkPattern = Regex("<think>(?s).*?</think>")
             val response = raw.replace(thinkPattern, "").trim()
             addMessageToChat("LLM", response, "llm-message")
@@ -148,10 +150,12 @@ class ChatView(private val chatService: ChatService) : VerticalLayout() {
                 messageDiv.style.setBackgroundColor("#e1f5fe")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_END)
             }
+
             "system-message" -> {
                 messageDiv.style.setBackgroundColor("#e8f5e9")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.CENTER)
             }
+
             else -> {
                 messageDiv.style.setBackgroundColor("#f1f1f1")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_START)
