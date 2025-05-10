@@ -1,11 +1,11 @@
 databaseChangeLog:
   - changeSet:
-      id: create-post-table
+      id: create-people-table
       author: gilles
-      comment: creation of the post's table
+      comment: creation of the people referential
       changes:
         - createTable:
-            tableName: post
+            tableName: people
             columns:
               - column:
                   name: id
@@ -14,13 +14,18 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: title
+                  name: name
                   type: varchar(255)
                   constraints:
                     nullable: false
               - column:
-                  name: content
-                  type: clob
+                  name: age
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country
+                  type: varchar(255)
                   constraints:
                     nullable: true
               - column:
@@ -34,38 +39,65 @@ databaseChangeLog:
                   constraints:
                     nullable: false
         - insert:
-            tableName: post
+            tableName: people
             columns:
               - column:
                   name: id
                   value: 7f557a93-b788-4795-9bc0-8bb5c7ae998a
               - column:
-                  name: title
-                  value: 'My title 1'
+                  name: name
+                  value: 'George'
               - column:
-                  name: content
-                  value: 'My content 1'
+                  name: age
+                  value: 50
+              - column:
+                  name: country
+                  value: France
               - column:
                   name: created_at
-                  value: '2020-01-01 00:00:00'
+                  value: '2024-01-01 00:00:00'
               - column:
                   name: updated_at
-                  value: '2020-01-01 00:00:00'
+                  value: '2024-01-01 00:00:00'
         - insert:
-            tableName: post
+            tableName: people
             columns:
               - column:
                   name: id
                   value: 5b5aa244-928b-4807-968d-b0501cc793e2
               - column:
-                  name: title
-                  value: 'My title 2'
+                  name: name
+                  value: 'Peter'
               - column:
-                  name: content
-                  value: 'My content 2'
+                  name: age
+                  value: 40
+              - column:
+                  name: country
+                  value: USA
               - column:
                   name: created_at
-                  value: '2020-01-01 00:00:00'
+                  value: '2024-01-01 00:00:00'
               - column:
                   name: updated_at
-                  value: '2020-01-01 00:00:00'
+                  value: '2024-01-01 00:00:00'
+        - insert:
+            tableName: people
+            columns:
+              - column:
+                  name: id
+                  value: 982aa70a-802a-4861-9632-8ae43643de5b
+              - column:
+                  name: name
+                  value: 'Stéven'
+              - column:
+                  name: age
+                  value: 45
+              - column:
+                  name: country
+                  value: USA
+              - column:
+                  name: created_at
+                  value: '2025-01-01 00:00:00'
+              - column:
+                  name: updated_at
+                  value: '2025-01-01 00:00:00'

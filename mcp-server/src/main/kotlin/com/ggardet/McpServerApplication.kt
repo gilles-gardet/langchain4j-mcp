@@ -1,6 +1,6 @@
 package com.ggardet.mcp
 
-import com.ggardet.mcp.service.WeatherService
+import com.ggardet.mcp.protocol.weather.service.WeatherService
 import org.springframework.ai.tool.ToolCallbackProvider
 import org.springframework.ai.tool.method.MethodToolCallbackProvider
 import org.springframework.boot.autoconfigure.SpringBootApplication

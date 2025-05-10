@@ -1,4 +1,4 @@
-package com.ggardet.mcp.model
+package com.ggardet.mcp.protocol.weather.model
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty

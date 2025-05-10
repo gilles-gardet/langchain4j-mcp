@@ -1,7 +1,7 @@
-package com.ggardet.mcp.service
+package com.ggardet.mcp.protocol.weather.service
 
-import com.ggardet.mcp.model.GeocodingResponse
-import com.ggardet.mcp.model.WeatherResponse
+import com.ggardet.mcp.protocol.weather.model.GeocodingResponse
+import com.ggardet.mcp.protocol.weather.model.WeatherResponse
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.stereotype.Service
@@ -18,8 +18,8 @@ class WeatherService {
 
     @Tool(description = "Get the current weather for a given city and country code")
     fun getWeather(
-        @ToolParam(description = "The city") city: String,
-        @ToolParam(description = "The country code") countryCode: String
+        @ToolParam(required = true, description = "The city") city: String,
+        @ToolParam(required = true, description = "The country code") countryCode: String
     ): String {
         val coords = getCoordinates(city, countryCode)
             ?: return "Could not find location for $city, $countryCode"

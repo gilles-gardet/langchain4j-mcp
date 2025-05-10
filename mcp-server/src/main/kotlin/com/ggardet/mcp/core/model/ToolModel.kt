@@ -1,4 +1,4 @@
-package com.ggardet.mcp.model
+package com.ggardet.mcp.core.model
 
 import org.springframework.ai.tool.ToolCallback
 

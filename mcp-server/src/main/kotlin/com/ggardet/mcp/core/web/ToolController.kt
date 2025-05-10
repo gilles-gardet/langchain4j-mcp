@@ -1,6 +1,6 @@
-package com.ggardet.mcp.web
+package com.ggardet.mcp.core.web
 
-import com.ggardet.mcp.model.Tools
+import com.ggardet.mcp.core.model.Tools
 import org.springframework.ai.tool.ToolCallback
 import org.springframework.ai.tool.ToolCallbackProvider
 import org.springframework.web.bind.annotation.GetMapping
