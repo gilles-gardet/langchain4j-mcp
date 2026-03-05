@@ -75,7 +75,19 @@ class AssistantConfig {
 
     @Bean(name = ["githubMcpTransport"])
     fun githubTransport(): McpTransport = StdioMcpTransport.Builder()
-        .command(listOf("/usr/local/bin/docker", "run", "-e", "GITHUB_PERSONAL_ACCESS_TOKEN", "-i", "mcp/github"))
+        .command(
+            listOf(
+                "/usr/local/bin/docker",
+                "run",
+                "--rm",
+                "--name",
+                "github-mpc-server",
+                "-e",
+                "GITHUB_PERSONAL_ACCESS_TOKEN",
+                "-i",
+                "mcp/github"
+            )
+        )
         .logEvents(true)
         .build()
 
