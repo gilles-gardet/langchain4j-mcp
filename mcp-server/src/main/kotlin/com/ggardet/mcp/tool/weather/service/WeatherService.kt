@@ -1,7 +1,7 @@
-package com.ggardet.mcp.protocol.weather.service
+package com.ggardet.mcp.tool.weather.service
 
-import com.ggardet.mcp.protocol.weather.model.GeocodingResponse
-import com.ggardet.mcp.protocol.weather.model.WeatherResponse
+import com.ggardet.mcp.tool.weather.model.GeocodingResponse
+import com.ggardet.mcp.tool.weather.model.WeatherResponse
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.stereotype.Service

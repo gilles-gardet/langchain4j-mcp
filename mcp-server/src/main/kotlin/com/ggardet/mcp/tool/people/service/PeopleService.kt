@@ -1,7 +1,7 @@
-package com.ggardet.mcp.protocol.people.service
+package com.ggardet.mcp.tool.people.service
 
-import com.ggardet.mcp.protocol.people.model.People
-import com.ggardet.mcp.protocol.people.repository.PeopleRepository
+import com.ggardet.mcp.tool.people.model.People
+import com.ggardet.mcp.tool.people.repository.PeopleRepository
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.stereotype.Service

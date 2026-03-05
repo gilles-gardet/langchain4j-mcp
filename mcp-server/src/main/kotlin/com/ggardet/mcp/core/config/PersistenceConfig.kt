@@ -9,7 +9,7 @@ import java.time.Instant
 import java.util.Optional
 
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = ["com.ggardet.mcp.protocol.people"])
+@EnableJpaRepositories(basePackages = ["com.ggardet.mcp.tool.people"])
 @Configuration
 class PersistenceConfig {
     

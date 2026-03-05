@@ -43,9 +43,9 @@ Then, you can start the client and the server projects with the following comman
 
 ```bash
 # start first by running the MCP server
-mvn spring-boot:run -pl mcp-server
+mvn clean compile && mvn spring-boot:run -pl mcp-server
 # then start the MCP client
-mvn spring-boot:run -pl mcp-client  
+mvn clean compile && mvn spring-boot:run -pl mcp-client  
 ```
 
 > [!WARNING]
@@ -56,3 +56,12 @@ mvn spring-boot:run -pl mcp-client
 
 If needed you can also do a `mvn compile -DskipTests` before to re-compile the project.  
 A chat window should be available at **localhost:8080** (client) and the MCP server at **localhost:8081**.
+
+## Test the MCP server
+
+We can use a client to test the tools, resources and prompt of our MCP server:
+
+```bash
+npx @modelcontextprotocol/inspector
+```
+And then connect using the **Streamable HTTP** transport type and the URL `http://localhost:8081/mcp`

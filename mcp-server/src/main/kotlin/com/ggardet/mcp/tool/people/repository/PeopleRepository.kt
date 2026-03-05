@@ -1,6 +1,6 @@
-package com.ggardet.mcp.protocol.people.repository
+package com.ggardet.mcp.tool.people.repository
 
-import com.ggardet.mcp.protocol.people.model.People
+import com.ggardet.mcp.tool.people.model.People
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.util.UUID
