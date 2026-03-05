@@ -8,6 +8,8 @@ The goal of this project is to:
 - [x] integrate a call to an external API with a LCM
 - [x] integrate a call to a database with a LCM
 - [x] integrate a call to the GitHub LCM Server (docker + openai LLM)
+- [ ] expose resources from the MCP server
+- [ ] expose prompts from the MCP server
 
 To be noticed that 2 LLMs will be used:
 
