@@ -29,24 +29,23 @@ To install the required tools and build the project, you can use the following c
 
 ```bash
 sdk env install # install the required tools & versions (jdk, mvn, ...)
-docker compose -f mcp-client/compose.yml -f mcp-server/compose.yml up -d # build and start the docker containers (ollama, webui, qdrant, etc.)
+docker compose -f mcp-client/compose.yml -f mcp-server/compose.yml up -d # build and start the docker containers (ollama, qdrant, etc.)
 mvn clean install -DskipTests # the first time fetch dependencies and build the project
 ```
 
 > [!NOTE]
 > To be noticed that the `docker compose` command will take a while to download the required images and build the
 > containers.  
-> That is precisely why we use `-d` to run it in the background.  
 > Later spring-boot should start the docker containers for you, so no need to run this command each time we want to
 > start the project.
 
 Then, you can start the client and the server projects with the following commands (in a separate terminal):
 
 ```bash
-# start the client with an openai LLM
-mvn spring-boot:run -pl mcp-client  
-# then to run the MCP server
+# start first by running the MCP server
 mvn spring-boot:run -pl mcp-server
+# then start the MCP client
+mvn spring-boot:run -pl mcp-client  
 ```
 
 > [!WARNING]
