@@ -2,8 +2,12 @@ server.port: 8081
 spring:
   ai.mcp.server:
     name: mcp-server
-    version: 0.0.1
+    protocol: streamable
     type: SYNC
+    version: 0.0.1
+    streamable-http:
+      mcp-endpoint: /mcp
+      keep-alive-interval: 30s
   application.name: mcp-server
   datasource:
     url: jdbc:postgresql://localhost:5342/mcp-server

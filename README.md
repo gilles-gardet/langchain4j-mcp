@@ -9,11 +9,10 @@ The goal of this project is to:
 - [x] integrate a call to a database with a LCM
 - [x] integrate a call to the GitHub LCM Server (docker + openai LLM)
 
-To be noticed that 3 LLMs will be used:
+To be noticed that 2 LLMs will be used:
 
 - *GPT-4* as our chat model (which supports MCP tools and suits well for the GitHub LCM server)
-- *qwen3* as our chat model (which supports MCP tools but is pretty limited and resource hungry)
-- *nomic* as our embedding model (to generate the embeddings for the vectorial db)
+- *nomic* as our local embedding model using Ollama (to generate the embeddings for the vectorial db)
 
 ## Prerequisites
 
@@ -42,11 +41,10 @@ mvn clean install -DskipTests # the first time fetch dependencies and build the 
 Then, you can start the client and the server projects with the following commands (in a separate terminal):
 
 ```bash
-mvn spring-boot:run -pl mcp-client  # start the LLM UI with a local LLM
-# or
-mvn spring-boot:run -pl mcp-client -Dspring-boot.run.profiles=openai # to run the client with an openai LLM
+# start the client with an openai LLM
+mvn spring-boot:run -pl mcp-client  
 # then to run the MCP server
-mvn spring-boot:run -pl mcp-server # start the MCP server
+mvn spring-boot:run -pl mcp-server
 ```
 
 > [!WARNING]
