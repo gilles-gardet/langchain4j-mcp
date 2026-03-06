@@ -1,4 +1,4 @@
-package com.ggardet.mcp.config
+  package com.ggardet.mcp.config
 
 import com.ggardet.mcp.model.Assistant
 import dev.langchain4j.data.segment.TextSegment

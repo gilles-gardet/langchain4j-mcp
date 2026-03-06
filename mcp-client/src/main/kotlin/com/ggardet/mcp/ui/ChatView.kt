@@ -6,6 +6,7 @@ import com.vaadin.flow.component.Html
 import com.vaadin.flow.component.Key.ENTER
 import com.vaadin.flow.component.button.Button
 import com.vaadin.flow.component.button.ButtonVariant
+import com.vaadin.flow.component.dependency.StyleSheet
 import com.vaadin.flow.component.html.Div
 import com.vaadin.flow.component.html.H1
 import com.vaadin.flow.component.html.Span
@@ -17,13 +18,14 @@ import com.vaadin.flow.component.textfield.TextField
 import com.vaadin.flow.dom.Style
 import com.vaadin.flow.router.PageTitle
 import com.vaadin.flow.router.Route
+import com.vaadin.flow.theme.aura.Aura
 import com.vladsch.flexmark.html.HtmlRenderer
 import com.vladsch.flexmark.parser.Parser
-import org.apache.commons.lang3.StringUtils
 
 private const val backgroundColor = "#f9f9f9"
 
-@Route(StringUtils.EMPTY)
+@StyleSheet(Aura.STYLESHEET)
+@Route("")
 @PageTitle("LLM Chat")
 class ChatView(private val assistant: Assistant, private val storeService: StoreService) : VerticalLayout() {
     private val chatHistory = Div()
@@ -157,10 +159,12 @@ class ChatView(private val assistant: Assistant, private val storeService: Store
                 messageDiv.style.setBackgroundColor("#e1f5fe")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_END)
             }
+
             "system-message" -> {
                 messageDiv.style.setBackgroundColor("#e8f5e9")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.CENTER)
             }
+
             else -> {
                 messageDiv.style.setBackgroundColor("#f1f1f1")
                 messageDiv.style.setAlignSelf(Style.AlignSelf.FLEX_START)
