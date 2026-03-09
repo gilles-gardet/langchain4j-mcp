@@ -1,4 +1,4 @@
-  package com.ggardet.mcp.config
+package com.ggardet.mcp.config
 
 import com.ggardet.mcp.model.Assistant
 import dev.langchain4j.data.segment.TextSegment
@@ -20,6 +20,8 @@ import dev.langchain4j.service.AiServices
 import dev.langchain4j.store.embedding.EmbeddingStore
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+
+private const val HEADER_API_KEY = "X-API-key"
 
 @Configuration
 class AssistantConfig {
@@ -62,11 +64,13 @@ class AssistantConfig {
     fun chatMemory(): ChatMemory = MessageWindowChatMemory.withMaxMessages(10)
 
     @Bean(name = ["serverMcpTransport"])
-    fun serverMcpTransport(): McpTransport = StreamableHttpMcpTransport.Builder()
-        .url("http://localhost:8081/mcp")
-        .logRequests(true)
-        .logResponses(true)
-        .build()
+    fun serverMcpTransport(): McpTransport =
+        StreamableHttpMcpTransport.Builder()
+            .url("http://localhost:8081/mcp")
+            .customHeaders(mutableMapOf(HEADER_API_KEY to "api01.mycustomapikey"))
+            .logRequests(true)
+            .logResponses(true)
+            .build()
 
     @Bean(name = ["serverMcpClient"])
     fun serverMcpClient(serverMcpTransport: McpTransport): McpClient = DefaultMcpClient.Builder()

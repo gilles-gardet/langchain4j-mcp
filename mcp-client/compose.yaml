@@ -1,27 +1,34 @@
 services:
-  ollama:
-    image: ollama/ollama:0.6.8
-    ports:
-      - "11434:11434"
-    container_name: ollama
+  ollama-llm:
+    image: ollama/ollama:latest
+    container_name: ollama-llm
     pull_policy: always
-    tty: true
     restart: always
-    entrypoint: ["/bin/bash", "/entrypoint.sh"]
-    healthcheck:
-      test: ["CMD", "ollama", "list"]
-      interval: 10s
-      timeout: 30s
-      retries: 5
-      start_period: 10s
-    environment:
-        - OLLAMA_KEEP_ALIVE=24h
-        - OLLAMA_HOST=0.0.0.0
+    tty: true
     volumes:
       - ollama-data:/root/.ollama
-      - ./docker/entrypoint.sh:/entrypoint.sh
+    ports:
+      - "11434:11434"
     networks:
       - ollama-network
+  ollama-fetch:
+    image: ollama/ollama:latest
+    container_name: ollama-fetch
+    depends_on:
+      - ollama-llm
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      - OLLAMA_HOST=http://ollama-llm:11434
+    networks:
+      - ollama-network
+    entrypoint: >
+      sh -c "
+        echo 'Waiting for Ollama server to start...' &&
+        sleep 10 &&
+        echo 'Pulling nomic model...' &&
+        ollama pull nomic-embed-text &&
+        echo 'Model preparation complete.'"
   qdrant:
     container_name: qdrant
     image: qdrant/qdrant:v1.13.0

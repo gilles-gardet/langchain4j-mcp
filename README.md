@@ -8,8 +8,10 @@ The goal of this project is to:
 - [x] integrate a call to an external API with a LCM
 - [x] integrate a call to a database with a LCM
 - [x] integrate a call to the GitHub LCM Server (docker + openai LLM)
-- [ ] expose resources from the MCP server
-- [ ] expose prompts from the MCP server
+- [x] expose resources from the MCP server
+- [x] expose prompts from the MCP server
+- [x] secure the MCP server with an API key
+- [ ] secure the MCP server using Oauth2
 
 To be noticed that 2 LLMs will be used:
 
@@ -64,4 +66,8 @@ We can use a client to test the tools, resources and prompt of our MCP server:
 ```bash
 npx @modelcontextprotocol/inspector
 ```
-And then connect using the **Streamable HTTP** transport type and the URL `http://localhost:8081/mcp`
+And then connect using the **Streamable HTTP** transport type and the URL `http://localhost:8081/mcp`.
+
+Since we secured our MCP server using an API key we will need to perform our calls using it.  
+For that we need to set a header `X-API-key: api01.mycustomapikey`.  
+**X-API-key** is the (default) header name for passing API keys, followed by the header value {id}.{secret}.  
