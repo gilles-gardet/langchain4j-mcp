@@ -1,6 +1,13 @@
 server.port: 8080
 spring:
   application.name: mcp-client
+  security.oauth2.client:
+    registration.authserver:
+      client-id: default-client
+      client-secret: default-secret
+      authorization-grant-type: authorization_code
+    provider.authserver.issuer-uri: http://localhost:9000
   threads.virtual.enabled: true
 logging.level.dev.langchain4j: DEBUG
 vaadin.launch-browser: true
+

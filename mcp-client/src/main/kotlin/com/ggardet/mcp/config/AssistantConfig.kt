@@ -66,7 +66,7 @@ class AssistantConfig {
     @Bean(name = ["serverMcpTransport"])
     fun serverMcpTransport(): McpTransport =
         StreamableHttpMcpTransport.Builder()
-            .url("http://localhost:8081/mcp")
+            .url("http://localhost:8090/mcp")
             .customHeaders(mutableMapOf(HEADER_API_KEY to "api01.mycustomapikey"))
             .logRequests(true)
             .logResponses(true)

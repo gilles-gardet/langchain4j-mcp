@@ -1,4 +1,4 @@
-server.port: 8081
+server.port: 8090
 spring:
   ai.mcp.server:
     name: mcp-server
@@ -15,4 +15,5 @@ spring:
     password: password
   liquibase.change-log: classpath:/db/changelog/db.changelog-master.yml
   threads.virtual.enabled: true
+  security.oauth2.resourceserver.jwt.issuer-uri: http://localhost:9000
 

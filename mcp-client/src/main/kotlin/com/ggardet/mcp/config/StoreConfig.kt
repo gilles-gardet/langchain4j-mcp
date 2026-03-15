@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration
 
 
 @Configuration
-class StoreConfiguration(private val embeddingModel: EmbeddingModel) {
+class StoreConfig(private val embeddingModel: EmbeddingModel) {
     private val collectionName: String = "documents"
 
     @Bean

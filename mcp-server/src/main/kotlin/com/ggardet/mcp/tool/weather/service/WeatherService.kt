@@ -4,6 +4,7 @@ import com.ggardet.mcp.tool.weather.model.GeocodingResponse
 import com.ggardet.mcp.tool.weather.model.WeatherResponse
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.web.client.RestClient
 import org.springframework.web.client.body
@@ -16,6 +17,7 @@ private const val GEO_API_URL = "https://geocoding-api.open-meteo.com/v1/search?
 class WeatherService {
     private val restClient = RestClient.builder().build()
 
+    @PreAuthorize("isAuthenticated()")
     @Tool(description = "Get the current weather for a given city and country code")
     fun getWeather(
         @ToolParam(required = true, description = "The city") city: String,

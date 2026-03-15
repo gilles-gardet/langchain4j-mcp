@@ -27,11 +27,13 @@
         <vaadin.version>25.0.6</vaadin.version>
         <langchain4j.version>1.11.0</langchain4j.version>
         <spring-ai.version>2.0.0-M2</spring-ai.version>
+        <springaicommunity.version>0.1.2</springaicommunity.version>
     </properties>
 
     <modules>
         <module>mcp-client</module>
         <module>mcp-server</module>
+        <module>mcp-oauth</module>
     </modules>
 
     <dependencyManagement>
