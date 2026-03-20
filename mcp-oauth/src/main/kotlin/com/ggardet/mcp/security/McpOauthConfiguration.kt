@@ -1,4 +1,4 @@
-package com.ggardet.mcp.security.config
+package com.ggardet.mcp.security
 
 import org.springaicommunity.mcp.security.authorizationserver.config.McpAuthorizationServerConfigurer
 import org.springframework.context.annotation.Bean

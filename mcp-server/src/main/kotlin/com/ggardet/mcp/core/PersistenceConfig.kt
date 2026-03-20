@@ -1,4 +1,4 @@
-package com.ggardet.mcp.core.config
+package com.ggardet.mcp.core
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,7 +9,7 @@ import java.time.Instant
 import java.util.Optional
 
 @EnableJpaAuditing
-@EnableJpaRepositories(basePackages = ["com.ggardet.mcp.tool.people"])
+@EnableJpaRepositories(basePackages = ["com.ggardet.mcp.repository"])
 @Configuration
 class PersistenceConfig {
     

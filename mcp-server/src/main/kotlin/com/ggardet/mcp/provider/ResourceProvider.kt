@@ -1,6 +1,6 @@
-package com.ggardet.mcp.resource.provider
+package com.ggardet.mcp.provider
 
-import com.ggardet.mcp.tool.people.repository.PeopleRepository
+import com.ggardet.mcp.repository.PeopleRepository
 import org.springaicommunity.mcp.annotation.McpResource
 import org.springaicommunity.mcp.annotation.McpToolParam
 import org.springframework.stereotype.Component

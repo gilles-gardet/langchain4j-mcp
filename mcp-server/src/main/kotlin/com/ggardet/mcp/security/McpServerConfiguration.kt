@@ -1,4 +1,4 @@
-package com.ggardet.mcp.security.config
+package com.ggardet.mcp.security
 
 import org.springaicommunity.mcp.security.server.apikey.ApiKeyEntityRepository
 import org.springaicommunity.mcp.security.server.apikey.memory.ApiKeyEntityImpl

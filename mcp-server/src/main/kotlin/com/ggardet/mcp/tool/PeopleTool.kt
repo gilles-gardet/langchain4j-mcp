@@ -1,7 +1,7 @@
-package com.ggardet.mcp.tool.people.service
+package com.ggardet.mcp.tool
 
-import com.ggardet.mcp.tool.people.model.People
-import com.ggardet.mcp.tool.people.repository.PeopleRepository
+import com.ggardet.mcp.model.People
+import com.ggardet.mcp.repository.PeopleRepository
 import org.springframework.ai.tool.annotation.Tool
 import org.springframework.ai.tool.annotation.ToolParam
 import org.springframework.security.access.prepost.PreAuthorize

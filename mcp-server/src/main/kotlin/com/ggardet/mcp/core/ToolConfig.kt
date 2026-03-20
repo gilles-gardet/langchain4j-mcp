@@ -1,6 +1,6 @@
-package com.ggardet.mcp.core.config
+package com.ggardet.mcp.core
 
-import com.ggardet.mcp.tool.people.service.PeopleService
+import com.ggardet.mcp.tool.PeopleService
 import com.ggardet.mcp.tool.weather.service.WeatherService
 import org.springframework.ai.tool.ToolCallbackProvider
 import org.springframework.ai.tool.method.MethodToolCallbackProvider
