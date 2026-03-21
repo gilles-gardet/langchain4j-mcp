@@ -36,8 +36,19 @@ class CompletionProvider(private val peopleRepository: PeopleRepository) {
     }
 
     @McpComplete(prompt = "weather-lookup")
-    fun completeCountryCode(request: CompleteRequest): CompleteResult {
-        val countryCodes = listOf(
+    fun completeWeather(request: CompleteRequest): CompleteResult {
+        if (request.argument().name() != "countryCode") {
+            return CompleteResult(CompleteCompletion(emptyList(), 0, false))
+        }
+        val prefix = request.argument().value().uppercase()
+        val matches = COUNTRY_CODES.filter { it.startsWith(prefix) }
+        val page = matches.take(MAX_COMPLETIONS)
+        return CompleteResult(CompleteCompletion(page, matches.size, matches.size > MAX_COMPLETIONS))
+    }
+
+    companion object {
+        private const val MAX_COMPLETIONS = 100
+        private val COUNTRY_CODES = listOf(
             "AD", "AE", "AF", "AG", "AL", "AM", "AO", "AR", "AT", "AU",
             "AZ", "BA", "BB", "BD", "BE", "BF", "BG", "BH", "BI", "BJ",
             "BN", "BO", "BR", "BS", "BT", "BW", "BY", "BZ", "CA", "CD",
@@ -59,8 +70,5 @@ class CompletionProvider(private val peopleRepository: PeopleRepository) {
             "UG", "US", "UY", "UZ", "VA", "VC", "VE", "VN", "VU", "WS",
             "YE", "ZA", "ZM", "ZW"
         )
-        val prefix = request.argument().value().uppercase()
-        val matches = countryCodes.filter { it.startsWith(prefix) }
-        return CompleteResult(CompleteCompletion(matches, matches.size, false))
     }
 }

@@ -1,6 +1,11 @@
 server.port: 8090
 spring:
   ai.mcp.server:
+    capabilities:
+      completion: true
+      prompt: true
+      resource: true
+      tool: true
     name: mcp-server
     protocol: streamable
     type: SYNC
