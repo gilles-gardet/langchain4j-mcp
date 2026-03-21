@@ -10,6 +10,14 @@ import org.springframework.stereotype.Component
 @Component
 class CompletionProvider(private val peopleRepository: PeopleRepository) {
 
+    @McpComplete(uri = "people://{name}/profile")
+    fun completeResourceName(name: String): List<String> {
+        val prefix = name.lowercase()
+        return peopleRepository.findAll()
+            .map { it.name }
+            .filter { it.lowercase().startsWith(prefix) }
+    }
+
     @McpComplete(prompt = "people-by-name")
     fun completeName(name: String): List<String> {
         val prefix = name.lowercase()
