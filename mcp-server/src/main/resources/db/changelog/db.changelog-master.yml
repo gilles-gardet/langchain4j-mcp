@@ -1,5 +1,7 @@
 databaseChangeLog:
   - include:
-      file: ./db/changelog/db.changelog-1.0.yml
+      file: db.changelog-1.0.yml
+      relativeToChangelogFile: true
   - include:
-      file: ./db/changelog/db.changelog-2.0.yml
+      file: db.changelog-2.0.yml
+      relativeToChangelogFile: true

@@ -36,11 +36,7 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-open-ai</artifactId>
         </dependency>
-        <dependency>
-            <groupId>dev.langchain4j</groupId>
-            <artifactId>langchain4j-ollama</artifactId>
-        </dependency>
-        <dependency>
+<dependency>
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-qdrant</artifactId>
         </dependency>
@@ -48,14 +44,11 @@
             <groupId>dev.langchain4j</groupId>
             <artifactId>langchain4j-mcp</artifactId>
         </dependency>
+
+        <!-- OAuth2 client for Keycloak client_credentials token acquisition -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springaicommunity</groupId>
-            <artifactId>mcp-client-security</artifactId>
-            <version>${springaicommunity.version}</version>
         </dependency>
     </dependencies>
 

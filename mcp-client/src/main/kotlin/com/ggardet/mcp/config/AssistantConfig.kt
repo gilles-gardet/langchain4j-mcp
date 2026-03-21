@@ -12,24 +12,31 @@ import dev.langchain4j.memory.ChatMemory
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.chat.ChatModel
 import dev.langchain4j.model.embedding.EmbeddingModel
-import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.openai.OpenAiChatModel
 import dev.langchain4j.model.openai.OpenAiChatModelName
+import dev.langchain4j.model.openai.OpenAiEmbeddingModel
+import dev.langchain4j.model.openai.OpenAiEmbeddingModelName
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.service.AiServices
 import dev.langchain4j.store.embedding.EmbeddingStore
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-
-private const val HEADER_API_KEY = "X-API-key"
+import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.oauth2.client.AuthorizedClientServiceOAuth2AuthorizedClientManager
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientManager
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientProviderBuilder
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository
+import org.springframework.security.web.SecurityFilterChain
+import java.util.function.Supplier
 
 @Configuration
 class AssistantConfig {
 
     @Bean
-    fun embeddingModel(): EmbeddingModel = OllamaEmbeddingModel.builder()
-        .baseUrl("http://localhost:11434")
-        .modelName("nomic-embed-text")
+    fun embeddingModel(): EmbeddingModel = OpenAiEmbeddingModel.builder()
+        .modelName(OpenAiEmbeddingModelName.TEXT_EMBEDDING_3_SMALL)
+        .apiKey(System.getenv("OPENAI_API_KEY"))
         .logRequests(true)
         .logResponses(true)
         .build()
@@ -47,11 +54,13 @@ class AssistantConfig {
     fun assistant(
         chatModel: ChatModel,
         contentRetriever: EmbeddingStoreContentRetriever,
-        mcpToolProvider: McpToolProvider
+        mcpToolProvider: McpToolProvider,
+        chatMemory: ChatMemory
     ): Assistant = AiServices.builder(Assistant::class.java)
         .chatModel(chatModel)
         .toolProvider(mcpToolProvider)
         .contentRetriever(contentRetriever)
+        .chatMemory(chatMemory)
         .build()
 
     @Bean
@@ -64,13 +73,45 @@ class AssistantConfig {
     fun chatMemory(): ChatMemory = MessageWindowChatMemory.withMaxMessages(10)
 
     @Bean(name = ["serverMcpTransport"])
-    fun serverMcpTransport(): McpTransport =
+    fun serverMcpTransport(keycloakTokenSupplier: KeycloakTokenSupplier): McpTransport =
         StreamableHttpMcpTransport.Builder()
             .url("http://localhost:8090/mcp")
-            .customHeaders(mutableMapOf(HEADER_API_KEY to "api01.mycustomapikey"))
+            .customHeaders(Supplier { keycloakTokenSupplier.get() })
             .logRequests(true)
             .logResponses(true)
             .build()
+
+    /**
+     * Background-safe OAuth2 client manager that works outside of an HTTP request context.
+     * The default Spring Boot auto-configured manager requires an active servlet request,
+     * making it unsuitable for use in application beans like [KeycloakTokenSupplier].
+     */
+    @Bean
+    fun authorizedClientManager(
+        clientRegistrationRepository: ClientRegistrationRepository,
+        authorizedClientService: OAuth2AuthorizedClientService,
+    ): OAuth2AuthorizedClientManager {
+        val manager = AuthorizedClientServiceOAuth2AuthorizedClientManager(
+            clientRegistrationRepository,
+            authorizedClientService,
+        )
+        manager.setAuthorizedClientProvider(
+            OAuth2AuthorizedClientProviderBuilder.builder().clientCredentials().build()
+        )
+        return manager
+    }
+
+    /**
+     * Permits all requests to the Vaadin UI and REST endpoints.
+     * Spring Security is pulled in transitively by spring-boot-starter-oauth2-client
+     * and would otherwise block the entire UI without this configuration.
+     */
+    @Bean
+    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        http.authorizeHttpRequests { it.anyRequest().permitAll() }
+        http.csrf { it.disable() }
+        return http.build()
+    }
 
     @Bean(name = ["serverMcpClient"])
     fun serverMcpClient(serverMcpTransport: McpTransport): McpClient = DefaultMcpClient.Builder()

@@ -1,12 +1,11 @@
 package com.ggardet.mcp.repository
 
 import com.ggardet.mcp.model.People
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
-import java.util.UUID
+import io.quarkus.hibernate.orm.panache.kotlin.PanacheRepository
+import jakarta.enterprise.context.ApplicationScoped
 
-@Repository
-interface PeopleRepository : JpaRepository<People, UUID> {
-    fun findByName(name: String): People?
-    fun findByCountry(country: String): List<People>?
+@ApplicationScoped
+class PeopleRepository : PanacheRepository<People> {
+    fun findByName(name: String): People? = find("name", name).firstResult()
+    fun findByCountry(country: String): List<People> = find("country", country).list()
 }

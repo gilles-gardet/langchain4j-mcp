@@ -1,34 +1,4 @@
 services:
-  ollama-llm:
-    image: ollama/ollama:latest
-    container_name: ollama-llm
-    pull_policy: always
-    restart: always
-    tty: true
-    volumes:
-      - ollama-data:/root/.ollama
-    ports:
-      - "11434:11434"
-    networks:
-      - ollama-network
-  ollama-fetch:
-    image: ollama/ollama:latest
-    container_name: ollama-fetch
-    depends_on:
-      - ollama-llm
-    volumes:
-      - ollama-data:/root/.ollama
-    environment:
-      - OLLAMA_HOST=http://ollama-llm:11434
-    networks:
-      - ollama-network
-    entrypoint: >
-      sh -c "
-        echo 'Waiting for Ollama server to start...' &&
-        sleep 10 &&
-        echo 'Pulling nomic model...' &&
-        ollama pull nomic-embed-text &&
-        echo 'Model preparation complete.'"
   qdrant:
     container_name: qdrant
     image: qdrant/qdrant:v1.13.0
@@ -42,11 +12,6 @@ services:
       - 6335
     volumes:
       - qdrant-data:/qdrant/storage
-networks:
-  ollama-network:
-    external: false
 volumes:
-  ollama-data:
-    name: ollama-data
   qdrant-data:
     name: qdrant-data

@@ -1,13 +1,18 @@
 server.port: 8080
 spring:
   application.name: mcp-client
-  security.oauth2.client:
-    registration.authserver:
-      client-id: default-client
-      client-secret: default-secret
-      authorization-grant-type: authorization_code
-    provider.authserver.issuer-uri: http://localhost:9000
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: mcp-client
+            client-secret: mcp-client-secret
+            authorization-grant-type: client_credentials
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8180/realms/mcp
   threads.virtual.enabled: true
 logging.level.dev.langchain4j: DEBUG
 vaadin.launch-browser: true
-

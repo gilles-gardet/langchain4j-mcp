@@ -5,19 +5,19 @@ import jakarta.persistence.Entity
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
+import jakarta.persistence.PrePersist
+import jakarta.persistence.PreUpdate
 import jakarta.persistence.Table
 import jakarta.persistence.Version
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
 import java.time.Instant
 import java.util.UUID
 
 @Entity
 @Table(name = "people")
-class People() {
+class People {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    val id: UUID? = null
+    var id: UUID? = null
 
     @Column(nullable = false)
     lateinit var name: String
@@ -26,24 +26,28 @@ class People() {
     var age: Int = 0
 
     @Column(nullable = true)
-    lateinit var country: String
+    var country: String? = null
 
     @Column(name = "created_at", nullable = false)
-    @CreatedDate
-    val createdAt: Instant? = Instant.now()
+    var createdAt: Instant = Instant.now()
 
     @Column(name = "updated_at", nullable = false)
-    @LastModifiedDate
-    var updatedAt: Instant? = Instant.now()
+    var updatedAt: Instant = Instant.now()
 
     @Version
     @Column(name = "version", nullable = false)
-    var version: Long? = 0
+    var version: Long = 0
 
-    constructor(name: String, age: Int, country: String) : this() {
-        this.name = name
-        this.age = age
-        this.country = country
+    @PrePersist
+    fun onPersist() {
+        createdAt = Instant.now()
+        updatedAt = Instant.now()
     }
-}
 
+    @PreUpdate
+    fun onUpdate() {
+        updatedAt = Instant.now()
+    }
+
+    override fun toString(): String = "People(id=$id, name=$name, age=$age, country=$country)"
+}

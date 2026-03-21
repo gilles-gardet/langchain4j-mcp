@@ -1,49 +1,46 @@
 package com.ggardet.mcp.provider
 
 import com.ggardet.mcp.repository.PeopleRepository
-import io.modelcontextprotocol.spec.McpSchema.CompleteRequest
-import io.modelcontextprotocol.spec.McpSchema.CompleteResult
-import io.modelcontextprotocol.spec.McpSchema.CompleteResult.CompleteCompletion
-import org.springaicommunity.mcp.annotation.McpComplete
-import org.springframework.stereotype.Component
+import io.quarkiverse.mcp.server.CompleteArg
+import io.quarkiverse.mcp.server.CompletePrompt
+import io.quarkiverse.mcp.server.CompleteResourceTemplate
+import jakarta.enterprise.context.ApplicationScoped
+import jakarta.inject.Inject
 
-@Component
-class CompletionProvider(private val peopleRepository: PeopleRepository) {
+@ApplicationScoped
+class CompletionProvider {
+    @Inject
+    lateinit var peopleRepository: PeopleRepository
 
-    @McpComplete(uri = "people://{name}/profile")
-    fun completeResourceName(name: String): List<String> {
+    @CompleteResourceTemplate(value = "Person Profile")
+    fun completeResourceName(@CompleteArg(name ="name") name: String): List<String> {
         val prefix = name.lowercase()
-        return peopleRepository.findAll()
+        return peopleRepository.listAll()
             .map { it.name }
             .filter { it.lowercase().startsWith(prefix) }
     }
 
-    @McpComplete(prompt = "people-by-name")
-    fun completeName(name: String): List<String> {
+    @CompletePrompt(value = "people-by-name")
+    fun completeName(@CompleteArg(name ="name") name: String): List<String> {
         val prefix = name.lowercase()
-        return peopleRepository.findAll()
+        return peopleRepository.listAll()
             .map { it.name }
             .filter { it.lowercase().startsWith(prefix) }
     }
 
-    @McpComplete(prompt = "people-by-country")
-    fun completeCountry(country: String): List<String> {
+    @CompletePrompt(value = "people-by-country")
+    fun completeCountry(@CompleteArg(name ="country") country: String): List<String> {
         val prefix = country.lowercase()
-        return peopleRepository.findAll()
-            .map { it.country }
+        return peopleRepository.listAll()
+            .mapNotNull { it.country }
             .distinct()
             .filter { it.lowercase().startsWith(prefix) }
     }
 
-    @McpComplete(prompt = "weather-lookup")
-    fun completeWeather(request: CompleteRequest): CompleteResult {
-        if (request.argument().name() != "countryCode") {
-            return CompleteResult(CompleteCompletion(emptyList(), 0, false))
-        }
-        val prefix = request.argument().value().uppercase()
-        val matches = COUNTRY_CODES.filter { it.startsWith(prefix) }
-        val page = matches.take(MAX_COMPLETIONS)
-        return CompleteResult(CompleteCompletion(page, matches.size, matches.size > MAX_COMPLETIONS))
+    @CompletePrompt(value = "weather-lookup")
+    fun completeCountryCode(@CompleteArg(name ="countryCode") countryCode: String): List<String> {
+        val prefix = countryCode.uppercase()
+        return COUNTRY_CODES.filter { it.startsWith(prefix) }.take(MAX_COMPLETIONS)
     }
 
     companion object {
